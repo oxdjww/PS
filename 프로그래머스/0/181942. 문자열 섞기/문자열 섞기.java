@@ -3,7 +3,7 @@ class Solution {
         StringBuilder sb = new StringBuilder();
         for (int i = 0 ; i < str1.length()*2; i++)
         {
-            sb.append((i % 2 == 0) ? str1.charAt(i / 2) : str2.charAt(i / 2));
+            sb.append(i%2==0 ? str1.charAt(i/2) : str2.charAt(i/2));
         }
         return sb.toString();
     }
