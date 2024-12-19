@@ -1,2 +1,20 @@
-# PS
-This is an auto push repository for Baekjoon Online Judge created with [BaekjoonHub](https://github.com/BaekjoonHub/BaekjoonHub).
+## Tips
+
+```
+💡 까먹지 말자
+```
+
+1. Stream API 사용법
+
+- List, array 등 연속된 정보를 stream으로 만든다
+  - `Arrays.stream($value)`
+  - `Streams.of($value)`
+  - `IntStream.range($startIndex, $endIndex+1)` -> 인덱스 기반 빠른 접근. (boxing이 생략되어 성능상 이점)
+    | 특징         | 일반 `Stream<T>`                 | 원시 스트림 (`IntStream`, `LongStream`, `DoubleStream`) |
+    |--------------|----------------------------------|-------------------------------------------------------|
+    | 데이터 유형  | 객체                             | 원시 타입 (int, long, double)                         |
+    | 박싱/언박싱  | 필요                             | 불필요                                                |
+    | 특화 메서드  | `filter`, `map` 등               | `sum`, `average`, `min`, `max` 등 원시 타입에 특화된 메서드 |
+    | 사용 예      | `Stream<String>`, `Stream<Integer>` | `IntStream`, `LongStream`, `DoubleStream`            |
+- 중간 연산을 실행 (map, filter 등)
+- 최종 연산 (forEach, reduce, sum 등)
