@@ -1,13 +1,6 @@
-import java.util.*;
+import java.util.stream.*;
 class Solution {
     public int[] solution(int start_num, int end_num) {
-        List<Integer> list = new ArrayList<Integer>();
-        for(int i = start_num ; i < end_num + 1 ; i++)
-        {
-            list.add(i);
-        }
-        return list.stream()
-            .mapToInt(Integer::intValue)
-            .toArray();
+        return IntStream.rangeClosed(start_num, end_num).toArray();
     }
 }
