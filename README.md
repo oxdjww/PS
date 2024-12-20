@@ -6,7 +6,7 @@
 
 1. Stream API 사용법
 
-- List, array 등 연속된 정보를 stream으로 만든다
+- List, array 등 연속된 정보를 stream으로 만든다 (Stack도 가능)
   - `Arrays.stream($value)`
   - `Streams.of($value)`
   - `IntStream.range($startIndex, $endIndex+1)` -> 인덱스 기반 빠른 접근. (boxing이 생략되어 성능상 이점)
@@ -18,3 +18,6 @@
     | 사용 예      | `Stream<String>`, `Stream<Integer>` | `IntStream`, `LongStream`, `DoubleStream`            |
 - 중간 연산을 실행 (map, filter 등)
 - 최종 연산 (forEach, reduce, sum 등)
+- Iterate function
+  - `IntStream is = IntStream.iterate($startValue, $endCondition, $logic)`
+  - `Stream<SeedClass> ns = Stream.iterate($startValue, $endCondition, $logic)`
