@@ -21,3 +21,21 @@
 - Iterate function
   - `IntStream is = IntStream.iterate($startValue, $endCondition, $logic)`
   - `Stream<SeedClass> ns = Stream.iterate($startValue, $endCondition, $logic)`
+ 
+2. List
+
+- List.subList(start, end);
+  - start부터 end-1 인덱스까지 추출해서 새로운 인덱스로
+- Arrays.copyOfRange(originalArray, start, end);
+- Array to List
+  - ```
+    List<Integer> list = Arrays.stream(arr)
+            .boxed()
+            .collect(Collectors.toList());
+    ```
+- List to Array
+  - ```
+    list.stream()
+            .mapToInt(Integer::intValue)
+            .toArray();
+    ```
