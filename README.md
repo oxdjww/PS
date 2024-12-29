@@ -39,3 +39,10 @@
             .mapToInt(Integer::intValue)
             .toArray();
     ```
+3. stream으로 list 조건 순회
+- ```
+  IntStream.range(0, num_list.length)
+            .filter(idx -> num_list[idx] < 0)
+            .findFirst()
+            .orElse(-1);
+  ```
