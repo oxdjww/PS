@@ -6,10 +6,7 @@ class Solution {
             int val = num_list[i];
             while(val != 1)
             {
-                if( val % 2 == 0)
-                    val /= 2;
-                else
-                    val = (val-1)/2;
+                val /= 2;
                 iter++;
             }
         }
