@@ -52,3 +52,13 @@
   - `String.lastIndexOf(찾을 문자, 시작할 위치(option))`
 - 앞에서부터 찾기
   - `String.IndexOf(찾을 문자, 시작할 위치(option))`
+
+5. 문자열 분리
+- 여러개를 구분자로 사용하여 분리
+  - `str.split("[abc]");`
+- 연속된 구분자 사용시
+  - `str.split("[abc]+");`
+- 하나 이상의 공백으로 분리
+  - `str.split("\\s+");`
+- 숫자 기준 분리
+  - `str.split("\\d+");`
