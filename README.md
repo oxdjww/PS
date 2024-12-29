@@ -24,9 +24,9 @@
  
 2. List
 
-- List.subList(start, end);
+- `List.subList(start, end);`
   - start부터 end-1 인덱스까지 추출해서 새로운 인덱스로
-- Arrays.copyOfRange(originalArray, start, end);
+- `Arrays.copyOfRange(originalArray, start, end);`
 - Array to List
   - ```
     List<Integer> list = Arrays.stream(arr)
@@ -46,3 +46,9 @@
             .findFirst()
             .orElse(-1);
   ```
+
+4. 문자열 찾기
+- 뒤에서부터 찾기
+  - `String.lastIndexOf(찾을 문자, 시작할 위치(option))`
+- 앞에서부터 찾기
+  - `String.IndexOf(찾을 문자, 시작할 위치(option))`
