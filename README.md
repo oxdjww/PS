@@ -65,3 +65,6 @@
   - `str.split("\\s+");`
 - 숫자 기준 분리
   - `str.split("\\d+");`
+ 
+6. String
+- `String.join("", set);` 두번째 파라미터에 컬렉션도 들어갈 수 있음.
