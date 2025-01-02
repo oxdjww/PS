@@ -1,10 +1,9 @@
 class Solution {
     public int solution(int n) {
-        for(int i = 1 ; i <= 1000 ; i++)
-        {
-            if(i*i == n)
-                return 1;
+        if ((int)Math.sqrt(n) * (int)Math.sqrt(n) == n) {
+            return 1;
+        } else {
+            return 2;
         }
-        return 2;
     }
 }
