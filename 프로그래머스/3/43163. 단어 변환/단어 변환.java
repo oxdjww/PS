@@ -15,7 +15,6 @@ class Solution {
             {
                 if(!visited[i] && isOneCharDifferent(cur.value, words[i]))
                 {
-                    System.out.println("PUT: "+words[i]);
                     visited[i] = true;
                     q.offer(new Word(words[i], cur.count + 1));
                 }
