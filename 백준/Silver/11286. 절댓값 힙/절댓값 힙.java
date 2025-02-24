@@ -3,8 +3,7 @@ import java.util.*;
 
 public class Main {
     private static PriorityQueue<int[]> pq = new PriorityQueue<>(
-        Comparator.comparingInt((int[] arr) -> arr[1])
-            .thenComparingInt(arr -> arr[0])
+        (arr1, arr2) -> arr1[1] == arr2[1] ? Integer.compare(arr1[0], arr2[0]) : Integer.compare(arr1[1], arr2[1])
     );
     private static StringBuilder sb = new StringBuilder();
 
