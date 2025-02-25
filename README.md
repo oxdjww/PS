@@ -68,3 +68,10 @@
  
 6. String
 - `String.join("", set);` 두번째 파라미터에 컬렉션도 들어갈 수 있음.
+
+7. Priority Queue rules
+- ```
+  private static PriorityQueue<int[]> pq = new PriorityQueue<>(
+        (arr1, arr2) -> arr1[1] == arr2[1] ? Integer.compare(arr1[0], arr2[0]) : Integer.compare(arr1[1], arr2[1])
+    );
+  ```
