@@ -8,27 +8,27 @@ public class Main {
         int N = scanner.nextInt();
         int M = scanner.nextInt();
         
-        String pattern = "";
-        String[] arr = {"I", "O"};
-        for(int i = 0 ; i < N * 2 ; i++)
-        {
-            pattern += arr[i%2];
-        }
-        pattern += "I";
-        // System.out.print(pattern);
-
         String S = scanner.next();
-        int count = 0;
-        int patternLength = pattern.length();
+        int count = 0, answer = 0;
 
-        for (int i = 0; i <= M - patternLength; i++)
+        for (int i = 0; i + 2 < M; i++)
         {
-            if (S.substring(i, i + patternLength).equals(pattern))
+            if(S.substring(i, i + 3).equals("IOI"))
             {
                 count++;
+                i++;
+                if(count == N)
+                {
+                    count--;
+                    answer++;
+                }
+            }
+            else 
+            {
+                count = 0;
             }
         }
 
-        System.out.println(count);
+        System.out.println(answer);
     }
 }
