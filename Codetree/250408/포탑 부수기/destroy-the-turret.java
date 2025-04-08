@@ -30,10 +30,10 @@ public class Main {
             }
         }        
 
-        for(int i = 0; i < k; i++) {
+        for(int i = 1; i <= k; i++) {
             int[] attacker = selectAttacker();
             // 최근 공격 저장
-            board[attacker[0]][attacker[1]].attackHistory = i;
+            board[attacker[0]][attacker[1]].power = 4;
             System.out.println(attacker[0] + ", " + attacker[1]);
             // int[] victim = selectVictim();
             // attack(attacker, victim);
@@ -52,44 +52,68 @@ public class Main {
             }
         }
 
-        List<Tower> list = new ArrayList<>();
+        List<Tower> smallerPower = new ArrayList<>();
 
         for(int i = 0; i < n; i++) {
             for(int j = 0; j < m; j++) {
                 if(board[i][j].power != 0) {
                     if(board[i][j].power == min) {
-                        list.add(board[i][j]);
+                        smallerPower.add(board[i][j]);
                     }
                 }                                       
             }
         }
 
-        if(list.size() == 1) {
+        if(smallerPower.size() == 1) {
             // 1. 공격력 가장 낮은 포탑 (1개)
-            return new int[]{list.get(0).x, list.get(0).y};
+            return new int[]{smallerPower.get(0).x, smallerPower.get(0).y};
         } else {
             // 2. 가장 최근 공격
-            Collections.sort(list, new Comparator<Tower>() {
+            Collections.sort(smallerPower, new Comparator<Tower>() {
                 @Override
                 public int compare(Tower t1, Tower t2) {
                     return Integer.compare(t2.attackHistory, t1.attackHistory);
                 }
             });
-            // 3. 행 열 합 가장 큰
-            Collections.sort(list, new Comparator<Tower>() {
-                @Override
-                public int compare(Tower t1, Tower t2) {
-                    return Integer.compare(t2.x + t2.y, t1.x + t2.y);
+            int recentMin = smallerPower.get(0).attackHistory;
+            List<Tower> recent = new ArrayList<>();
+            for(int i = 0; i < smallerPower.size(); i++) {
+                if(smallerPower.get(i).attackHistory == recentMin) {
+                    recent.add(smallerPower.get(i));
                 }
-            });
-            // 4. 열 가장 큰
-            Collections.sort(list, new Comparator<Tower>() {
-                @Override
-                public int compare(Tower t1, Tower t2) {
-                    return Integer.compare(t2.y, t1.y);
+            }
+
+            if(recent.size() == 1) {
+                return new int[]{recent.get(0).x, recent.get(0).y};
+            } else {
+                // 3. 행 열 합 가장 큰
+                Collections.sort(recent, new Comparator<Tower>() {
+                    @Override
+                    public int compare(Tower t1, Tower t2) {
+                        return Integer.compare(t2.x + t2.y, t1.x + t1.y);
+                    }
+                });
+                int rowColSumMax = recent.get(0).x + recent.get(0).y;
+                List<Tower> rowColSum = new ArrayList<>();
+                for(int i = 0; i < recent.size(); i++) {
+                    if(recent.get(i).x + recent.get(i).y == rowColSumMax) {
+                        rowColSum.add(recent.get(i));
+                    }
                 }
-            });
-            return new int[]{list.get(0).x, list.get(0).y};
+                                    
+                if(rowColSum.size() == 1) {
+                    return new int[]{rowColSum.get(0).x, rowColSum.get(0).y};
+                } else {
+                    // 4. 열 가장 큰
+                    Collections.sort(rowColSum, new Comparator<Tower>() {
+                        @Override
+                        public int compare(Tower t1, Tower t2) {
+                            return Integer.compare(t2.y, t1.y);
+                        }
+                    });
+                    return new int[]{rowColSum.get(0).x, rowColSum.get(0).y};
+                }
+            }
         }
     }
 }
