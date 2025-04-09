@@ -48,6 +48,7 @@ public class Main {
             // System.out.println(victim[0] + ", " + victim[1]);
             attack(attacker, victim);
             repair();
+            if (countAliveTowers() <= 1) break;
         }
         int max = Integer.MIN_VALUE;
         for(int i = 0; i < board.length; i++) {
@@ -57,6 +58,17 @@ public class Main {
         }
         System.out.println(max);
     }
+
+    private static int countAliveTowers() {
+        int cnt = 0;
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (board[i][j].power > 0) cnt++;
+            }
+        }
+        return cnt;
+    }
+
 
     private static int[] selectAttacker() {
         int minPower = Integer.MAX_VALUE;
