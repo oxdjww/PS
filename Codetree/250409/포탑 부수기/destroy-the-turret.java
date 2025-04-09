@@ -141,7 +141,7 @@ public class Main {
         
         for(int i = 0; i < n; i++) {
             for(int j = 0; j < m; j++) {
-                if(board[i][j].power != 0 && i != attacker[0] && j != attacker[1]) {
+                if(board[i][j].power != 0 && !(i == attacker[0] && j == attacker[1])) {
                     maxPower = Math.max(maxPower, board[i][j].power);
                 }
             }
@@ -149,34 +149,34 @@ public class Main {
         
         if(maxPower == Integer.MIN_VALUE) return null;
 
-        List<Tower> smallerPower = new ArrayList<>();
+        List<Tower> biggestPower = new ArrayList<>();
 
         for(int i = 0; i < n; i++) {
             for(int j = 0; j < m; j++) {
                 if(board[i][j].power != 0) {
-                    if(board[i][j].power == maxPower && i != attacker[0] && j != attacker[1]) {
-                        smallerPower.add(board[i][j]);
+                    if(board[i][j].power != 0 && !(i == attacker[0] && j == attacker[1])){
+                        biggestPower.add(board[i][j]);
                     }
                 }                                       
             }
         }
 
-        if(smallerPower.size() == 1) {
+        if(biggestPower.size() == 1) {
             // 1. 공격력 가장 높은 포탑 (1개)
-            return new int[]{smallerPower.get(0).x, smallerPower.get(0).y};
+            return new int[]{biggestPower.get(0).x, biggestPower.get(0).y};
         } else {
             // 2. 가장 오래된 공격
-            Collections.sort(smallerPower, new Comparator<Tower>() {
+            Collections.sort(biggestPower, new Comparator<Tower>() {
                 @Override
                 public int compare(Tower t1, Tower t2) {
                     return Integer.compare(t1.attackHistory, t2.attackHistory);
                 }
             });
-            int recentMin = smallerPower.get(0).attackHistory;
+            int recentMin = biggestPower.get(0).attackHistory;
             List<Tower> recent = new ArrayList<>();
-            for(int i = 0; i < smallerPower.size(); i++) {
-                if(smallerPower.get(i).attackHistory == recentMin) {
-                    recent.add(smallerPower.get(i));
+            for(int i = 0; i < biggestPower.size(); i++) {
+                if(biggestPower.get(i).attackHistory == recentMin) {
+                    recent.add(biggestPower.get(i));
                 }
             }
 
