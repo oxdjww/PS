@@ -218,6 +218,7 @@ public class Main {
         visited = new boolean[n][m];
         Queue<Point> queue = new LinkedList<>();
         List<int[]> tmp = new ArrayList<>();
+        tmp.add(new int[]{attacker[0], attacker[1]});
         Point start = new Point(attacker[0], attacker[1], tmp);
         queue.offer(start);
         visited[attacker[0]][attacker[1]] = true;
@@ -292,7 +293,7 @@ public class Main {
                 board[x][y].power = (result < 0 ? 0 : result);
             } else if(i != 0) {
                 // 경로
-                // System.out.println(board[x][y].pㅇower + " -= " + attackerPower/2);
+                // System.out.println(board[x][y].power + " -= " + attackerPower/2);
                 int result = board[x][y].power - attackerPower/2;
                 board[x][y].power = (result < 0 ? 0 : result);
             }
@@ -301,7 +302,7 @@ public class Main {
     }
     private static void potanAttack(int[] attacker, int[] target) {
         // System.out.println("POTAN ATTACK");
-        int attackPower = board[attacker[0]][attacker[1]].power/2;
+        int attackPower = board[attacker[0]][attacker[1]].power;
         int targetX = target[0];
         int targetY = target[1];
         int tartgetAttackResult = board[targetX][targetY].power - attackPower;
