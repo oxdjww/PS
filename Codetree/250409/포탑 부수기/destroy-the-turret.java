@@ -301,7 +301,7 @@ public class Main {
         }
     }
     private static void potanAttack(int[] attacker, int[] target) {
-        // System.out.println("POTAN ATTACK");
+    // 공격력을 전체 공격력으로 수정
         int attackPower = board[attacker[0]][attacker[1]].power;
         int targetX = target[0];
         int targetY = target[1];
@@ -323,6 +323,7 @@ public class Main {
             // 자신은 제외
             if(nx == attacker[0] && ny == attacker[1]) continue;
 
+            // 인접 타일은 절반의 공격력 적용
             int result = board[nx][ny].power - attackPower/2;
             board[nx][ny].power = result < 0 ? 0 : result;
             previousAttack[nx][ny] = true;
