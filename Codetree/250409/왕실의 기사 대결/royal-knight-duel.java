@@ -45,6 +45,7 @@ public class Main {
         for(int i = 0; i < Q; i++) {
             st = new StringTokenizer(br.readLine());
             int commandNight = Integer.parseInt(st.nextToken());
+            if(knightStatus[commandNight].power == 0) continue;
             int direction = Integer.parseInt(st.nextToken());
 
             execute(commandNight, direction);
@@ -85,17 +86,26 @@ public class Main {
             continue;
         }
         // 이동
-        moveKnight(commandNight, direction)
+        moveKnight(commandNight, direction);
+
         // 데미지 계산(commandNight 제외)
         
     }
 
     private static boolean canMove(int commandNight, int direction) {
-        boolean flag = false;
+        boolean flag = true;
         switch(dircetion) {
             case 0: // 위쪽
                 int nextRow = knightStatus[commandNight].row - 1;
-                if(nextRow >= 0) flag = true;
+                int column = knightStatus[commandNight].column;
+                int width = knightStatus[commandNight].width;
+                if(nextRow < 0) {
+                    
+                }
+                for(int i = column; i < width; i++) {
+                    if(board[nextRow][column] == 2) flag = false;
+                }
+                
                 break;
 
             case 1: // 오른쪽
@@ -119,8 +129,31 @@ public class Main {
         return flag;
     }
 
-    private static void moveKnight(int commandNight, int direction) {
-        
+    private static void moveKnight(int knightNumber, int direction) {
+        switch(dircetion) {
+            case 0: // 위쪽
+                int nextRow = knightStatus[commandNight].row - 1;
+                if(knightBoard[nextRow][]
+                break;
+
+            case 1: // 오른쪽
+                int nextColumn = knightStatus[commandNight].column + 1;
+                if(nextColumn < L) flag = true;
+                break;
+
+            case 2: // 아래쪽
+                int nextRow = knightStatus[commandNight].row + 1;
+                if(nextRow < L) flag = true;
+                break;
+
+            case 3: //왼쪽
+                int nextColumn = knightStatus[commandNight].column - 1;
+                if(nextColumn >= 0) flag = true;
+                break;
+
+            default:
+                break;
+        }
     }
 }
 
