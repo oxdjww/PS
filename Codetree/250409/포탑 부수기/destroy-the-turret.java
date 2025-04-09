@@ -42,7 +42,7 @@ public class Main {
             // 버프
             board[attacker[0]][attacker[1]].power += (n+m);
             // System.out.println(attacker[0] + ", " + attacker[1]);
-            int[] victim = selectVictim();
+            int[] victim = selectVictim(attacker);
             if (victim == null) break;
 
             // System.out.println(victim[0] + ", " + victim[1]);
@@ -136,12 +136,12 @@ public class Main {
         }
     } // selectAttacker()
 
-    private static int[] selectVictim() {
+    private static int[] selectVictim(int[] attacker) {
         int maxPower = Integer.MIN_VALUE;
         
         for(int i = 0; i < n; i++) {
             for(int j = 0; j < m; j++) {
-                if(board[i][j].power != 0) {
+                if(board[i][j].power != 0 && i != attacker[0] && j != attacker[1]) {
                     maxPower = Math.max(maxPower, board[i][j].power);
                 }
             }
@@ -301,7 +301,7 @@ public class Main {
         }
     }
     private static void potanAttack(int[] attacker, int[] target) {
-    // 공격력을 전체 공격력으로 수정
+        // System.out.println("POTAN ATTACK");
         int attackPower = board[attacker[0]][attacker[1]].power;
         int targetX = target[0];
         int targetY = target[1];
@@ -323,7 +323,6 @@ public class Main {
             // 자신은 제외
             if(nx == attacker[0] && ny == attacker[1]) continue;
 
-            // 인접 타일은 절반의 공격력 적용
             int result = board[nx][ny].power - attackPower/2;
             board[nx][ny].power = result < 0 ? 0 : result;
             previousAttack[nx][ny] = true;
