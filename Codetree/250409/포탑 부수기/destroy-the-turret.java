@@ -154,7 +154,7 @@ public class Main {
         for(int i = 0; i < n; i++) {
             for(int j = 0; j < m; j++) {
                 if(board[i][j].power != 0) {
-                    if(board[i][j].power == maxPower) {
+                    if(board[i][j].power == maxPower && i != attacker[0] && j != attacker[1]) {
                         smallerPower.add(board[i][j]);
                     }
                 }                                       
