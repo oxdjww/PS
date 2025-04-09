@@ -45,6 +45,7 @@ public class Main {
             // System.out.println(victim[0] + ", " + victim[1]);
             attack(attacker, victim);
             repair();
+            visited = new boolean[n][m];
         }
         int max = Integer.MIN_VALUE;
         for(int i = 0; i < board.length; i++) {
@@ -213,11 +214,13 @@ public class Main {
         tmp.add(new int[]{attacker[0], attacker[1]});
         Point start = new Point(attacker[0], attacker[1], tmp);
         queue.offer(start);
+        visited[attacker[0]][attacker[1]] = true;
         Point shortestPathPoint = null;
         while(!queue.isEmpty()) {
             Point current = queue.poll();
             int cx = current.x;
             int cy = current.y;
+            // System.out.println("POLL " + current + ": " + cx + ", " + cy);
             if(cx == target[0] && cy == target[1]) {
                 // 최단거리 탐색 완료
                 shortestPathPoint = current;
@@ -236,32 +239,36 @@ public class Main {
                 if(ny >= m) ny -= m;
                 if(board[nx][ny].power != 0 && !visited[nx][ny]) {
                     current.path.add(new int[]{nx, ny});
-                    queue.offer(new Point(
+                    Point input = new Point(
                         nx, ny, new ArrayList<>(current.path)
-                    ));
+                    );
+                    current.path.remove(current.path.size() - 1);
+                    queue.offer(input);
+                    // System.out.println("OFFER " + input + ": " + nx + ", " + ny);
                     visited[nx][ny] = true;
                 }
             }
         } // while
-        System.out.println("SHORTEST PATH");
-        if(shortestPathPoint != null ) {
-                for(int i = 0 ; i < shortestPathPoint.path.size() ; i++) {
-                System.out.print(shortestPathPoint.path.get(i));
-            }
-        }
-        System.out.println();
+        // System.out.println("SHORTEST PATH");
+        // if(shortestPathPoint != null ) {
+        //         for(int i = 0 ; i < shortestPathPoint.path.size() ; i++) {
+        //         System.out.print(shortestPathPoint.path.get(i)[0] + ", " + shortestPathPoint.path.get(i)[1]);
+        //         System.out.println();
+        //     }
+        // }
+        // System.out.println();
         if(shortestPathPoint == null) {
             // 포탄 공격
-            print();
-            System.out.println("POTAN");
+            // print();
+            // System.out.println("POTAN");
             potanAttack(attacker, target);
-            print();
+            // print();
         } else {
             // 레이저 공격 로직
-            print();
-            System.out.println("LAZER");
+            // print();
+            // System.out.println("LAZER");
             lazerAttack(attacker, shortestPathPoint);
-            print();
+            // print();
         }
     } // attack(int[], int[])
     private static void lazerAttack(int[] attacker, Point target) {
