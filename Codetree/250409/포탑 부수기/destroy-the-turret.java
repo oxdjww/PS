@@ -305,8 +305,8 @@ public class Main {
         int attackPower = board[attacker[0]][attacker[1]].power;
         int targetX = target[0];
         int targetY = target[1];
-        int tartgetAttackResult = board[targetX][targetY].power - attackPower;
-        board[targetX][targetY].power = tartgetAttackResult < 0 ? 0 : tartgetAttackResult;
+        int targetAttackResult = board[targetX][targetY].power - attackPower;
+        board[targetX][targetY].power = targetAttackResult < 0 ? 0 : targetAttackResult;
         previousAttack[targetX][targetY] = true;
         int[] dx = {-1, -1, -1, 0, 0, 1, 1, 1};
         int[] dy = {-1, 0, 1, -1, 1, -1, 0, 1};
