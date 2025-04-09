@@ -218,7 +218,6 @@ public class Main {
         visited = new boolean[n][m];
         Queue<Point> queue = new LinkedList<>();
         List<int[]> tmp = new ArrayList<>();
-        tmp.add(new int[]{attacker[0], attacker[1]});
         Point start = new Point(attacker[0], attacker[1], tmp);
         queue.offer(start);
         visited[attacker[0]][attacker[1]] = true;
