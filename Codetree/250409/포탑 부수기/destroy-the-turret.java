@@ -240,16 +240,15 @@ public class Main {
                 int nx = cx + dx[i];
                 int ny = cy + dy[i];
                 // 경계 벗어난다면 반대편으로
-                if(nx < 0) nx = n - 1;
-                if(nx >= n) nx = 0;
-                if(ny < 0) ny = m - 1;
-                if(ny >= m) ny = 0;
+                if(nx < 0) nx = n;
+                if(nx >= n) nx -=n;
+                if(ny < 0) ny = m;
+                if(ny >= m) ny -= m;
                 if(board[nx][ny].power != 0 && !visited[nx][ny]) {
-                    current.path.add(new int[]{nx, ny});
-                    Point input = new Point(
-                        nx, ny, new ArrayList<>(current.path)
-                    );
-                    current.path.remove(current.path.size() - 1);
+                    List<int[]> newPath = new ArrayList<>(current.path);
+                    newPath.add(new int[]{nx, ny});
+                    queue.offer(new Point(nx, ny, newPath));
+                    visited[nx][ny] = true;
                     queue.offer(input);
                     // System.out.println("OFFER " + input + ": " + nx + ", " + ny);
                     visited[nx][ny] = true;
@@ -316,10 +315,10 @@ public class Main {
             int ny = targetY + dy[i];
 
             // 경계 벗어난다면 반대편으로
-            if(nx < 0) nx = n-1;
-            if(nx >= n) nx = 0;
-            if(ny < 0) ny = m - 1;
-            if(ny >= m) ny = 0;
+            if(nx < 0) nx = n;
+            if(nx >= n) nx -=n;
+            if(ny < 0) ny = m;
+            if(ny >= m) ny -= m;
 
             // 자신은 제외
             if(nx == attacker[0] && ny == attacker[1]) continue;
@@ -348,7 +347,9 @@ public class Main {
                 }
             }
         }
-        previousAttack = new boolean[n][m];
+        for (int i = 0; i < n; i++) {
+            Arrays.fill(previousAttack[i], false);
+        }
     }
 }
 
