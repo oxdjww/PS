@@ -34,6 +34,7 @@ public class Main {
 
         for(int i = 1; i <= k; i++) {
             int[] attacker = selectAttacker();
+            if (attacker == null) break;
             // 공격자도 공격 관련에 포함
             previousAttack[attacker[0]][attacker[1]] = true;
             // 최근 공격 저장
@@ -42,10 +43,11 @@ public class Main {
             board[attacker[0]][attacker[1]].power += (n+m);
             // System.out.println(attacker[0] + ", " + attacker[1]);
             int[] victim = selectVictim();
+            if (victim == null) break;
+
             // System.out.println(victim[0] + ", " + victim[1]);
             attack(attacker, victim);
             repair();
-            visited = new boolean[n][m];
         }
         int max = Integer.MIN_VALUE;
         for(int i = 0; i < board.length; i++) {
@@ -66,6 +68,8 @@ public class Main {
                 }
             }
         }
+
+        if(minPower == Integer.MAX_VALUE) return null;
 
         List<Tower> smallerPower = new ArrayList<>();
 
@@ -142,6 +146,8 @@ public class Main {
                 }
             }
         }
+        
+        if(maxPower == Integer.MIN_VALUE) return null;
 
         List<Tower> smallerPower = new ArrayList<>();
 
@@ -209,6 +215,7 @@ public class Main {
     } // selectVictim()
 
     private static void attack(int[] attacker, int[] target) {
+        visited = new boolean[n][m];
         Queue<Point> queue = new LinkedList<>();
         List<int[]> tmp = new ArrayList<>();
         tmp.add(new int[]{attacker[0], attacker[1]});
@@ -275,7 +282,8 @@ public class Main {
         // System.out.println("LAZER ATTACK");
         List<int[]> path = target.path;
         int attackerPower = board[attacker[0]][attacker[1]].power;
-        for(int i = 1; i < path.size(); i++) {
+
+        for(int i = 0; i < path.size(); i++) {
             int x = path.get(i)[0];
             int y = path.get(i)[1];
             // System.out.println("LAZER :" + x + ", " + y);
@@ -284,14 +292,13 @@ public class Main {
                 // System.out.println(board[x][y].power + " -= " + attackerPower);
                 int result = board[x][y].power - attackerPower;
                 board[x][y].power = (result < 0 ? 0 : result);
-                previousAttack[x][y] = true;
-            } else {
+            } else if(i != 0) {
                 // 경로
                 // System.out.println(board[x][y].pㅇower + " -= " + attackerPower/2);
                 int result = board[x][y].power - attackerPower/2;
                 board[x][y].power = (result < 0 ? 0 : result);
-                previousAttack[x][y] = true;
             }
+            previousAttack[x][y] = true;
         }
     }
     private static void potanAttack(int[] attacker, int[] target) {
@@ -302,17 +309,21 @@ public class Main {
         int tartgetAttackResult = board[targetX][targetY].power - attackPower;
         board[targetX][targetY].power = tartgetAttackResult < 0 ? 0 : tartgetAttackResult;
         previousAttack[targetX][targetY] = true;
-        int[] dx = {0, 1, 1, 1, 0, -1, -1};
-        int[] dy = {1, 1, 0, -1, -1, -1, 0};
+        int[] dx = {-1, -1, -1, 0, 0, 1, 1, 1};
+        int[] dy = {-1, 0, 1, -1, 1, -1, 0, 1};
         for(int i = 0; i < dx.length; i++) {
             int nx = targetX + dx[i];
             int ny = targetY + dy[i];
-            if(nx == attacker[0] && ny == attacker[1]) continue;
+
             // 경계 벗어난다면 반대편으로
             if(nx < 0) nx = n;
             if(nx >= n) nx -=n;
             if(ny < 0) ny = m;
             if(ny >= m) ny -= m;
+
+            // 자신은 제외
+            if(nx == attacker[0] && ny == attacker[1]) continue;
+
             int result = board[nx][ny].power - attackPower/2;
             board[nx][ny].power = result < 0 ? 0 : result;
             previousAttack[nx][ny] = true;
