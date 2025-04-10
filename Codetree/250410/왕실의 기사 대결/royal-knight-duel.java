@@ -111,19 +111,29 @@ public class Main {
     }
 
     private static void calculateDamage(int excludeKnight) {
-        for(int i = 0; i < L; i++) {
-            for(int j = 0; j < L; j++) {
-                int knightNumber = knightBoard[i][j];
-                if (board[i][j] == 1 && knightNumber != 0 && knightNumber != excludeKnight && moved[knightNumber]) {
-                    int resultPower = knightStatus[knightNumber].power - 1;
-                    if(resultPower <= 0) {
-                        killKnight(knightNumber);
+        for (int i = 1; i <= N; i++) {
+            if (!moved[i] || i == excludeKnight || !knightStatus[i].alive) continue;
+
+            int damage = 0;
+            Knight knight = knightStatus[i];
+
+            for (int r = knight.row; r < knight.row + knight.height; r++) {
+                for (int c = knight.column; c < knight.column + knight.width; c++) {
+                    if (board[r][c] == 1) {
+                        damage++;
                     }
-                    knightStatus[knightNumber].damage += 1;
                 }
+            }
+
+            knight.power -= damage;
+            knight.damage += damage;
+
+            if (knight.power <= 0) {
+                killKnight(i);
             }
         }
     }
+
 
     private static void killKnight(int knightNumber) {
         knightStatus[knightNumber].alive = false;
