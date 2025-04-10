@@ -7,6 +7,8 @@ public class Main {
     private static int Q;
     private static int[][] board, knightBoard;
     private static Knight[] knightStatus;
+    private static int[][] directions = {{-1, 0}, {0, 1}, {1, 0}, {0, -1}};
+    private static boolean[] moved;
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -18,7 +20,7 @@ public class Main {
         board = new int[L][L];
         knightBoard = new int[L][L];
         knightStatus = new Knight[N+1];
-
+        moved = new boolean[N+1];
         // 체스판 초기화
         for(int i = 0; i < L; i++) {
             st = new StringTokenizer(br.readLine());
@@ -48,8 +50,20 @@ public class Main {
             if(knightStatus[commandKnight].power == 0) continue;
             int direction = Integer.parseInt(st.nextToken());
 
-            execute(commandKnight, direction);
+            if(knightStatus[commandKnight].alive){
+                execute(commandKnight, direction);
+            }
         }
+
+        int answer = 0;
+        for(int i = 1; i < knightStatus.length; i++) {
+            Knight node = knightStatus[i];
+            // System.out.println(i + "번 기사(" + node.alive + ") 누적 데미지: " + node.damage);
+            if(node.alive) {
+                answer += node.damage;
+            }
+        }
+        System.out.println(answer);
     }
 
     private static void printKnightStatus() {
@@ -81,142 +95,192 @@ public class Main {
     }
 
     private static void execute(int commandKnight, int direction) {
+        // System.out.println(commandKnight + " MOVE TO " + direction);
         // 움직일 수 없으면 continue;
         if(!canMove(commandKnight, direction)) {
-            System.out.println(commandKnight + "CAN'T MOVE");
+            // System.out.println(commandKnight + "CAN'T MOVE");
             return;
         }
+        // System.out.println("CAN MOVE!!");
         // 이동
-        // moveKnight(commandKnight, direction);
-
+        moveKnight(commandKnight, direction);
+        // print(knightBoard);
         // 데미지 계산(commandKnight 제외)
-        
+        calculateDamage(commandKnight);
+        // print(knightBoard);
+        Arrays.fill(moved, false);
     }
 
-    private static boolean canMove(int commandKnight, int direction) {
-        boolean flag = true;
-        int nextRow;
-        int nextColumn;
-        int row;
-        int column;
-        int height;
-        int width;
-        switch(direction) {
-            case 0: // 위쪽
-                nextRow = knightStatus[commandKnight].row - 1;
-                column = knightStatus[commandKnight].column;
-                width = knightStatus[commandKnight].width;
-
-                // 보드를 벗어나는 경우
-                if(nextRow < 0) {
-                    flag = false;
-                    break;
-                }
-                // 벽인 경우
-                for(int i = column; i < column + width; i++) {
-                    if(board[nextRow][column] == 2) {
-                        flag = false;
-                        break;
+    private static void calculateDamage(int excludeKnight) {
+        for(int i = 0; i < L; i++) {
+            for(int j = 0; j < L; j++) {
+                int knightNumber = knightBoard[i][j];
+                if (board[i][j] == 1 && knightNumber != 0 && knightNumber != excludeKnight && moved[knightNumber]) {
+                    int resultPower = knightStatus[knightNumber].power - 1;
+                    if(resultPower <= 0) {
+                        killKnight(knightNumber);
                     }
+                    knightStatus[knightNumber].damage += 1;
                 }
+            }
+        }
+    }
 
-                // 다른 기사가 있는 경우
-                for(int i = column; i < column + width; i++) {
-                    int nextKnight = knightBoard[nextRow][column];
-                    if(nextKnight != 0) {
-                        flag = canMove(nextKnight, direction);
-                    }
+    private static void killKnight(int knightNumber) {
+        knightStatus[knightNumber].alive = false;
+        for(int i = 0; i < L; i++) {
+            for(int j = 0; j < L; j++) {
+                if(knightBoard[i][j] == knightNumber) {
+                    knightBoard[i][j] = 0;
                 }
-                break;
+            }
+        }
+    }
 
-            case 1: // 오른쪽
-                nextColumn = knightStatus[commandKnight].row + 1;
-                row = knightStatus[commandKnight].row;
-                height = knightStatus[commandKnight].height;
+    private static boolean canMove(int knightNumber, int direction) {
+        int row = knightStatus[knightNumber].row;
+        int column = knightStatus[knightNumber].column;
+        int height = knightStatus[knightNumber].height;
+        int width = knightStatus[knightNumber].width;
+        // System.out.println("TRY " + knightNumber + "(" + row + ", " + column + ") MOVE TO " + direction);
+        
+        for(int i = row; i < row + height; i++) {
+            for(int j = column; j < column + width; j++) {
+                int nr = i + directions[direction][0];
+                int nc = j + directions[direction][1];
 
-                // 보드를 벗어나는 경우
-                if(nextColumn >= L) {
-                    flag = false;
-                    break;
-                }
-                // 벽인 경우
-                for(int i = row; i < row + height; i++) {
-                    if(board[row][nextColumn] == 2) {
-                        flag = false;
-                        break;
-                    }
-                }
-
-                // 다른 기사가 있는 경우
-                for(int i = row; i < row + height; i++) {
-                    int nextKnight = knightBoard[row][nextColumn];
-                    if(nextKnight != 0) {
-                        flag = canMove(nextKnight, direction);
-                    }
-                }
-                break;
-
-            case 2: // 아래쪽
-                nextRow = knightStatus[commandKnight].row + 1;
-                column = knightStatus[commandKnight].column;
-                width = knightStatus[commandKnight].width;
-                System.out.println(nextRow + "행 " + column + "열 부터 높이 " + width + "만큼 검사");
-                // 보드를 벗어나는 경우
-                if(nextRow >= L) {
+                // 벽 체크
+                if(isWall(nr,nc)) {
                     return false;
                 }
-                
-                // 벽인 경우
-                for(int i = column; i < column + width; i++) {
-                    if(board[nextRow][i] == 2) {
-                        return false;
-                    }
+
+                int next = knightBoard[nr][nc];
+
+                if(next == 0 || next == (knightNumber)) {
+                    continue;
                 }
 
-                // 다른 기사가 있는 경우
-                for(int i = column; i < column + width; i++) {
-                    int nextKnight = knightBoard[nextRow][i];
-                    if(nextKnight != 0) {
-                        return canMove(nextKnight, direction);
-                    }
+                if(!canMove(next, direction)) {
+                    return false;
                 }
-                return true;
-
-            case 3: //왼쪽
-                nextColumn = knightStatus[commandKnight].row - 1;
-                row = knightStatus[commandKnight].row;
-                height = knightStatus[commandKnight].height;
-
-                // 보드를 벗어나는 경우
-                if(nextColumn < 0) {
-                    flag = false;
-                    break;
-                }
-                // 벽인 경우
-                for(int i = row; i < row + height; i++) {
-                    if(board[row][nextColumn] == 2) {
-                        flag = false;
-                        break;
-                    }
-                }
-
-                // 다른 기사가 있는 경우
-                for(int i = row; i < row + height; i++) {
-                    int nextKnight = knightBoard[row][nextColumn];
-                    if(nextKnight != 0) {
-                        flag = canMove(nextKnight, direction);
-                    }
-                }
-                break;
-
-            default:
-                break;
+            }
         }
-        return flag;
+        return true;
     }
 
+    static boolean isWall(int r, int c) {
+        return r < 0 || c < 0 || r >= L || c >= L || board[r][c] == 2;
+    }
+    
     private static void moveKnight(int knightNumber, int direction) {
-        
+        int row = knightStatus[knightNumber].row;
+        int column = knightStatus[knightNumber].column;
+        int height = knightStatus[knightNumber].height;
+        int width = knightStatus[knightNumber].width;
+        // System.out.println("MOVE " + knightNumber + "(" + row + ", " + column + ") MOVE TO " + direction);
+
+        for(int i = row; i < row + height; i++) {
+            for(int j = column; j < column + width; j++) {
+                int nr = i + directions[direction][0];
+                int nc = j + directions[direction][1];
+
+                int next = knightBoard[nr][nc];
+
+                if(next == 0 || next == knightNumber) {
+                    continue;
+                }
+                
+                moveKnight(next, direction);
+            }
+        }
+
+        moved[knightNumber] = true;
+
+        switch(direction) {
+            case 0:
+                moveUp(knightNumber, direction);
+                break;
+            case 1:
+                moveRight(knightNumber, direction);
+                break;
+            case 2:
+                moveDown(knightNumber, direction);
+                break;
+            case 3:
+                moveLeft(knightNumber, direction);
+                break;
+        }
+
+        knightStatus[knightNumber].row += directions[direction][0];
+        knightStatus[knightNumber].column += directions[direction][1];
+    }
+
+    private static void moveUp(int knightNumber, int direction) {
+        int row = knightStatus[knightNumber].row;
+        int column = knightStatus[knightNumber].column;
+        int height = knightStatus[knightNumber].height;
+        int width = knightStatus[knightNumber].width;
+
+        for (int r = row; r < row + height; r++) {
+            for (int c = column; c < column + width; c++) {
+                int nr =  r + directions[direction][0];
+                int nc =  c + directions[direction][1];
+
+                knightBoard[r][c] = 0;
+                knightBoard[nr][nc] = (knightNumber);
+            }
+        }
+    }
+
+    private static void moveRight(int knightNumber, int direction) {
+        int row = knightStatus[knightNumber].row;
+        int column = knightStatus[knightNumber].column;
+        int height = knightStatus[knightNumber].height;
+        int width = knightStatus[knightNumber].width;
+
+        for (int c = column + width - 1; c >= column; c--) {
+            for (int r = row; r < row + height; r++) {
+                int nr =  r + directions[direction][0];
+                int nc =  c + directions[direction][1];
+
+                knightBoard[r][c] = 0;
+                knightBoard[nr][nc] = (knightNumber);
+            }
+        }
+    }
+
+    private static void moveDown(int knightNumber, int direction) {
+        int row = knightStatus[knightNumber].row;
+        int column = knightStatus[knightNumber].column;
+        int height = knightStatus[knightNumber].height;
+        int width = knightStatus[knightNumber].width;
+
+        for (int r = row + height - 1; r >= row; r--) {
+            for (int c = column; c < column + width; c++) {
+                int nr =  r + directions[direction][0];
+                int nc =  c + directions[direction][1];
+
+                knightBoard[r][c] = 0;
+                knightBoard[nr][nc] = (knightNumber);
+            }
+        }
+    }
+
+    private static void moveLeft(int knightNumber, int direction) {
+        int row = knightStatus[knightNumber].row;
+        int column = knightStatus[knightNumber].column;
+        int height = knightStatus[knightNumber].height;
+        int width = knightStatus[knightNumber].width;
+
+        for (int c = column; c < column + width; c++) {
+            for (int r = row; r < row + height; r++) {
+                int nr =  r + directions[direction][0];
+                int nc =  c + directions[direction][1];
+
+                knightBoard[r][c] = 0;
+                knightBoard[nr][nc] = (knightNumber);
+            }
+        }
     }
 }
 
@@ -227,6 +291,7 @@ class Knight {
     int width;
     int power;
     int damage = 0;
+    boolean alive = true;
 
     public Knight(int row, int column, int height, int width, int power) {
         this.row = row;
@@ -234,5 +299,6 @@ class Knight {
         this.height = height;
         this.width = width;
         this.power = power;
+        this.alive = true;
     }
 }
