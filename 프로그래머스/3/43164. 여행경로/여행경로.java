@@ -1,56 +1,39 @@
 import java.util.*;
 
 class Solution {
-    
-    private static int n;
-    private static Map<String, List<String>> db = new HashMap<>();
-    private static List<String> answer = new ArrayList<>();
-    
-    public String[] solution(String[][] tickets) {       
-        // 티켓 저장
-        n = (1 + tickets.length);
-        
-        for(int i = 0; i < tickets.length; i++) {
-            String src = tickets[i][0];
-            String dst = tickets[i][1];
-            db.computeIfAbsent(src, k -> new ArrayList<>()).add(dst);
-        }
-        
-        
-        // 모든 티켓 알파벳 순서로 정렬
-        for (String key : db.keySet()) {
-            Collections.sort(db.get(key));
-        }
-        
-        answer.add("ICN");
-        dfs("ICN");
-        
-        String[] answerArray = new String[answer.size()];
-        for(int i = 0; i < answer.size(); i++) {
-            answerArray[i] = answer.get(i);
-        }
-        return answerArray;
+    List<String> answer = null;
+    boolean[] visited;
+
+    public String[] solution(String[][] tickets) {
+        Arrays.sort(tickets, (a, b) -> a[0].equals(b[0]) ? a[1].compareTo(b[1]) : a[0].compareTo(b[0]));
+        visited = new boolean[tickets.length];
+
+        List<String> route = new ArrayList<>();
+        route.add("ICN");
+        dfs("ICN", route, tickets, 0);
+
+        return answer.toArray(new String[0]);
     }
-    
-    private static boolean dfs(String current) {
-        if (answer.size() >= n) return true;
 
-        if (!db.containsKey(current)) return false;
-
-        List<String> destList = db.get(current);
-
-        for (int i = 0; i < destList.size(); i++) {
-            String next = destList.get(i);
-            destList.remove(i);
-            answer.add(next);
-
-            if (dfs(next)) return true;
-
-            // 백트래킹
-            answer.remove(answer.size() - 1);
-            destList.add(i, next);
+    private void dfs(String curr, List<String> route, String[][] tickets, int usedCount) {
+        if (usedCount == tickets.length) {
+            if (answer == null) {
+                answer = new ArrayList<>(route);
+            }
+            return;
         }
 
-        return false;
+        for (int i = 0; i < tickets.length; i++) {
+            if (!visited[i] && tickets[i][0].equals(curr)) {
+                visited[i] = true;
+                route.add(tickets[i][1]);
+
+                dfs(tickets[i][1], route, tickets, usedCount + 1);
+
+                // 백트래킹
+                visited[i] = false;
+                route.remove(route.size() - 1);
+            }
+        }
     }
 }
