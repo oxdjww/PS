@@ -21,8 +21,8 @@ public class Main {
         for (int i = 0; i < n; i++) {
             cost[i] = Integer.parseInt(st.nextToken());
         }
-        int optimalPrice = Integer.MAX_VALUE;
-        int current = 0;
+        long optimalPrice = Long.MAX_VALUE;
+        long current = 0;
         for (int i = 0; i < n - 1; i++) {
             current += Math.min(optimalPrice, cost[i]) * dist[i];
             optimalPrice = Math.min(optimalPrice, cost[i]);
